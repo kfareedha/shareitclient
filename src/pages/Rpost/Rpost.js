@@ -13,6 +13,7 @@ import Paper from "@mui/material/Paper";
 import { Button } from "react-bootstrap";
 import { Typography } from "@mui/material";
 import Tablerow from "../../components/tablerow/tablerow";
+import { deletePost, Rposts } from "../../api/AdminRequest";
 
 function Reported() {
   const user = useSelector((state) => state.authReducer.authData);
@@ -24,7 +25,7 @@ function Reported() {
   }, []);
   async function reportedpost() {
     try {
-      const { data } = await axios.get("http://localhost:5000/admin/rposts");
+      const { data } = await Rposts();
       console.log(data);
 
       setPost(data.post);
@@ -35,9 +36,7 @@ function Reported() {
   }
   async function deletePost(id) {
     try {
-      const { data } = await axios.delete(
-        `http://localhost:5000/admin/${id}/${user.user._id}/report`
-      );
+      const { data } = await deletePost(id);
 
       reportedpost();
     } catch (error) {
@@ -51,29 +50,33 @@ function Reported() {
         {" "}
         Reported Posts
       </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">No</TableCell>
-              <TableCell align="center">User Name</TableCell>
-              <TableCell align="center">Email</TableCell>
-              <TableCell align="center">Posts</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {post.map((row, index) => (
-              <Tablerow
-                deletePost={deletePost}
-                row={row}
-                key={index}
-                index={index}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {post.length > 0 ? (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">No</TableCell>
+                <TableCell align="center">User Name</TableCell>
+                <TableCell align="center">Email</TableCell>
+                <TableCell align="center">Posts</TableCell>
+                <TableCell align="center">Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {post.map((row, index) => (
+                <Tablerow
+                  deletePost={deletePost}
+                  row={row}
+                  key={index}
+                  index={index}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <h2>No Reported Posts</h2>
+      )}
       <Button
         className="button infoButton"
         style={{ marginTop: "10px", position: "relative", zIndex: "1000000" }}

@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 import { Button } from "react-bootstrap";
 import { Typography } from "@mui/material";
 import Tablerow from "../../components/tablerow/tablerow";
-
+import { getPosts } from "../../api/AdminRequest";
 function PostManagement() {
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ function PostManagement() {
   async function postmanagement() {
     try {
       console.log("keri");
-      const { data } = await axios.get("http://localhost:5000/admin/posts");
+      const { data } = await getPosts();
       console.log(data, "axios data");
 
       setPosts(data.posts);
